@@ -63,16 +63,33 @@
 
             <ul class="list-group">
 
-                {% for todo in todos %}
+               {% for todo in todos %}
 
-                    <li class="list-group-item">
-                        {{ loop.index }}.
-                        <a href="/todo/{{ todo.id }}">
-                            {{ todo.item }}
-                        </a>
-                    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
 
-                {% endfor %}
+        <div>
+            {{ loop.index }}.
+            <a href="/todo/{{ todo.id }}">
+                {{ todo.item }}
+            </a>
+        </div>
+
+        <form
+            action="/todo/{{ todo.id }}/delete"
+            method="post"
+            onsubmit="return confirm('Удалить эту задачу?');"
+        >
+            <button
+                type="submit"
+                class="btn btn-outline-danger btn-sm"
+            >
+                Удалить
+            </button>
+        </form>
+
+    </li>
+
+{% endfor %}
 
             </ul>
 
