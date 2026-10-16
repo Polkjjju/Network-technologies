@@ -95,3 +95,76 @@ async def search_todo(query: str = Query(None)) -> dict:
         if query and query.lower() in todo.item.lower()
     ]
     return {"results": results}
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Path,
+    Request,
+    status,
+)
+from fastapi.templating import Jinja2Templates
+
+from model import Todo
+
+
+todo_router = APIRouter()
+
+todo_list = []
+
+templates = Jinja2Templates(directory="templates")
+
+
+# Получение списка задач
+@todo_router.get("/todo")
+async def retrieve_todo(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="todo.html",
+        context={
+            "todos": todo_list,
+            "item": "",
+        },
+    )
+
+
+# Добавление новой задачи
+@todo_router.post("/todo")
+async def add_todo(
+    request: Request,
+    todo: Todo = Depends(Todo.as_form),
+):
+    todo.id = len(todo_list) + 1
+    todo_list.append(todo)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="todo.html",
+        context={
+            "todos": todo_list,
+            "item": "",
+        },
+    )
+
+
+# Получение одной задачи
+@todo_router.get("/todo/{todo_id}")
+async def get_single_todo(
+    request: Request,
+    todo_id: int = Path(..., title="ID задачи"),
+):
+    for todo in todo_list:
+        if todo.id == todo_id:
+            return templates.TemplateResponse(
+                request=request,
+                name="todo.html",
+                context={
+                    "todo": todo,
+                    "item": "",
+                },
+            )
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Задача с указанным ID не найдена",
+    )

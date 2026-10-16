@@ -1,0 +1,91 @@
+{% extends "home.html" %}
+
+{% block todo_container %}
+
+<main>
+
+    <!-- Форма добавления задачи -->
+    <section class="mb-4">
+        <form action="/todo" method="post">
+            <div class="input-group">
+
+                <input
+                    type="text"
+                    name="item"
+                    class="form-control"
+                    value="{{ item | default('') }}"
+                    placeholder="Введите новую задачу"
+                    required
+                >
+
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    Добавить задачу
+                </button>
+
+            </div>
+        </form>
+    </section>
+
+
+    <!-- Отображение одной задачи -->
+    {% if todo %}
+
+        <div class="card">
+            <div class="card-body">
+
+                <h2 class="h4">
+                    Задача №{{ todo.id }}
+                </h2>
+
+                <p class="mb-3">
+                    {{ todo.item }}
+                </p>
+
+                <a href="/todo" class="btn btn-outline-primary">
+                    Вернуться к списку
+                </a>
+
+            </div>
+        </div>
+
+
+    <!-- Отображение списка задач -->
+    {% else %}
+
+        <h2 class="h4 text-center mb-3">
+            Список задач
+        </h2>
+
+        {% if todos %}
+
+            <ul class="list-group">
+
+                {% for todo in todos %}
+
+                    <li class="list-group-item">
+                        {{ loop.index }}.
+                        <a href="/todo/{{ todo.id }}">
+                            {{ todo.item }}
+                        </a>
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p class="text-muted">
+                Пока задач нет. Добавьте первую задачу.
+            </p>
+
+        {% endif %}
+
+    {% endif %}
+
+</main>
+
+{% endblock %}
