@@ -1,4 +1,9 @@
 venv/
 __pycache__/
+ HEAD
 *.pyc
 .DS_Store
+*.py[cod]
+.DS_Store
+.env
+ 4f08dea (Практическая работа 7: структурирование FastAPI)
